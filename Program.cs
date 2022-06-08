@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace HeistPartTwo
 {
@@ -6,7 +7,67 @@ namespace HeistPartTwo
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            List<IRobber> rolodex = new List<IRobber>();
+
+            Hacker sippy = new Hacker("Sippy", 100, 30);
+            Muscle karla = new Muscle("Karla", 95, 28);
+            LockSpecialist bory = new LockSpecialist("Bory Blark", 85, 25);
+            Hacker charlie = new Hacker("Charlie", 46, 12);
+            Muscle mac = new Muscle("Mac", 29, 8);
+            LockSpecialist dennis = new LockSpecialist("Dennis", 32, 11);
+
+            rolodex.Add(sippy);
+            rolodex.Add(karla);
+            rolodex.Add(bory);
+            rolodex.Add(charlie);
+            rolodex.Add(mac);
+            rolodex.Add(dennis);
+
+            Console.WriteLine($"How many scumbags are in your rolodex? {rolodex.Count}, that's how many scumbags are in there.");
+            createARobber();
+            Console.WriteLine();
+            Console.WriteLine($"How many scumbags are in your rolodex? {rolodex.Count}, that's how many scumbags are in there.");
+
+            void createARobber()
+            {
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("Enter the name of a new scumbag for your rolodex.");
+                string newName = Console.ReadLine();
+
+                while (newName != "")
+                {
+                    Console.WriteLine("What specialty should this scumbag have? (enter a number 1-3)");
+                    Console.WriteLine("1) Hacker (disables alarms)");
+                    Console.WriteLine("2) Muscle (disarms guards)");
+                    Console.WriteLine("3) Lock Specialist (cracks vault)");
+                    int newNumber = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine("What's this scumbag's skill level? (1-100)");
+                    int newSkillLevel = int.Parse(Console.ReadLine());
+
+                    Console.WriteLine("What percentage of the take does this scumbag get? (1-100)");
+                    int newPercentageCut = int.Parse(Console.ReadLine());
+
+                    if (newNumber == 1)
+                    {
+                        rolodex.Add(new Hacker(newName, newSkillLevel, newPercentageCut));
+                        Console.WriteLine($"The Hacker {newName} has been added to your rolodex");
+                    }
+                    else if (newNumber == 2)
+                    {
+                        rolodex.Add(new Muscle(newName, newSkillLevel, newPercentageCut));
+                        Console.WriteLine($"The Muscle {newName} has been added to your rolodex");
+                    }
+                    else if (newNumber == 3)
+                    {
+                        rolodex.Add(new LockSpecialist(newName, newSkillLevel, newPercentageCut));
+                        Console.WriteLine($"The Lock Specialist {newName} has been added to your rolodex");
+                    }
+                    newName = "";
+                    createARobber();
+                }
+                
+            }
         }
     }
 }

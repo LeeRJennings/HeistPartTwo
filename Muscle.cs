@@ -16,5 +16,12 @@ namespace HeistPartTwo
                 Console.WriteLine($"{Name} has disabled the guards ...... permenantly");
             }
         }
+
+        public Muscle(string name, int skillLevel, int percentageCut)
+        {
+            Name = name;
+            SkillLevel = skillLevel;
+            PercentageCut = percentageCut;
+        }
     }
 }
