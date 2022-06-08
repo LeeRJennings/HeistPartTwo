@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace HeistPartTwo
 {
@@ -24,9 +25,22 @@ namespace HeistPartTwo
             rolodex.Add(dennis);
 
             Console.WriteLine($"How many scumbags are in your rolodex? {rolodex.Count}, that's how many scumbags are in there.");
+            
             createARobber();
             Console.WriteLine();
-            Console.WriteLine($"How many scumbags are in your rolodex? {rolodex.Count}, that's how many scumbags are in there.");
+            Console.WriteLine($"There are now {rolodex.Count} scumbags in your rolodex.");
+            
+            Bank randoBank = randomizeBank();
+
+            List<Intel> intel = new List<Intel>();
+            intel.Add(new Intel("Alarm", randoBank.AlarmScore));
+            intel.Add(new Intel("Security Guards", randoBank.SecurityGuardScore));
+            intel.Add(new Intel("Vault", randoBank.VaultScore));
+
+            Console.WriteLine();
+            intelReport();
+
+            //====================================== methods ======================================
 
             void createARobber()
             {
@@ -65,8 +79,28 @@ namespace HeistPartTwo
                     }
                     newName = "";
                     createARobber();
-                }
-                
+                }  
+            }
+
+            Bank randomizeBank()
+            {
+                Random rando = new Random();
+
+                Bank bank = new Bank()
+                {
+                    AlarmScore = rando.Next(101),
+                    VaultScore = rando.Next(101),
+                    SecurityGuardScore = rando.Next(101),
+                    CashOnHand = rando.Next(50000, 1000001)
+                };
+
+                return bank;
+            }
+
+            void intelReport()
+            {
+                intel.OrderBy(i => i.Score);
+                Console.WriteLine($"Here's an intel report, ya heard? Least Secure: {intel[0].Name} | Most Secure: {intel[2].Name}");
             }
         }
     }
