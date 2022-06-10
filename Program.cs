@@ -9,6 +9,7 @@ namespace HeistPartTwo
         static void Main(string[] args)
         {
             List<IRobber> rolodex = new List<IRobber>();
+            List<IRobber> crew = new List<IRobber>();
 
             Hacker sippy = new Hacker("Sippy", 100, 30);
             Muscle karla = new Muscle("Karla", 95, 28);
@@ -40,8 +41,19 @@ namespace HeistPartTwo
             Console.WriteLine();
             intelReport();
 
-            //====================================== methods ======================================
+            Console.WriteLine();
+            Console.WriteLine("Here's all them dang scumbags you have to pick from for your crew");
+            Console.WriteLine("-----------------------------------------------------------------");
+            displayRolodex();
 
+
+            Console.WriteLine();
+            Console.WriteLine($"Enter a scumbag's number to add them to your crew. (1-{rolodex.Count})");
+            int robberIndex = int.Parse(Console.ReadLine()) - 1;
+            crew.Add(rolodex[robberIndex]);
+
+
+            //====================================== methods ======================================
             void createARobber()
             {
                 Console.WriteLine("-------------------------------------------------");
@@ -101,6 +113,25 @@ namespace HeistPartTwo
             {
                 intel.OrderBy(i => i.Score);
                 Console.WriteLine($"Here's an intel report, ya heard? Least Secure: {intel[0].Name} | Most Secure: {intel[2].Name}");
+            }
+
+            void displayRolodex()
+            {
+                string response = "y";
+                while (response == "y")
+                {
+                    for (int i = 0; i < rolodex.Count; i++)
+                    {
+                        if (!crew.Contains(rolodex[i]))
+                        {
+                            Console.WriteLine($"{i + 1}) Name: {rolodex[i].Name} | Specialty: {rolodex[i].Specialty} | Skill Level: {rolodex[i].SkillLevel} | Cut: {rolodex[i].PercentageCut}");
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
             }
         }
     }
