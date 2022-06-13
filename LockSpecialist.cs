@@ -11,6 +11,7 @@ namespace HeistPartTwo
         public void PerformSkill(Bank bank)
         {
             bank.VaultScore = bank.VaultScore - SkillLevel;
+            Console.WriteLine("----------------------------------------------------------------------------");
             Console.WriteLine($"{Name} is tyring to crack the code. Decreased security {SkillLevel} points.");
             if (bank.VaultScore <= 0)
             {

@@ -11,6 +11,7 @@ namespace HeistPartTwo
         public void PerformSkill(Bank bank)
         {
             bank.SecurityGuardScore = bank.SecurityGuardScore - SkillLevel;
+            Console.WriteLine("----------------------------------------------------------------------------");
             Console.WriteLine($"{Name} is locked in an intense Kung-Fu battle with the guards. Decreased security {SkillLevel} points.");
             if (bank.SecurityGuardScore <= 0)
             {
