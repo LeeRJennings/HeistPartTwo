@@ -10,6 +10,9 @@ namespace HeistPartTwo
         {
             List<IRobber> rolodex = new List<IRobber>();
             List<IRobber> crew = new List<IRobber>();
+            Bank randoBank = randomizeBank();
+            List<Intel> intel = new List<Intel>();
+            int crewCutTotal = 0;
 
             Hacker sippy = new Hacker("Sippy", 100, 30);
             Muscle karla = new Muscle("Karla", 95, 28);
@@ -25,33 +28,38 @@ namespace HeistPartTwo
             rolodex.Add(mac);
             rolodex.Add(dennis);
 
+            intel.Add(new Intel("Alarm", randoBank.AlarmScore));
+            intel.Add(new Intel("Security Guards", randoBank.SecurityGuardScore));
+            intel.Add(new Intel("Vault", randoBank.VaultScore));
+
             Console.WriteLine($"How many scumbags are in your rolodex? {rolodex.Count}, that's how many scumbags are in there.");
             
             createARobber();
             Console.WriteLine();
             Console.WriteLine($"There are now {rolodex.Count} scumbags in your rolodex.");
-            
-            Bank randoBank = randomizeBank();
-
-            List<Intel> intel = new List<Intel>();
-            intel.Add(new Intel("Alarm", randoBank.AlarmScore));
-            intel.Add(new Intel("Security Guards", randoBank.SecurityGuardScore));
-            intel.Add(new Intel("Vault", randoBank.VaultScore));
 
             Console.WriteLine();
             intelReport();
 
             Console.WriteLine();
-            Console.WriteLine("Here's all them dang scumbags you have to pick from for your crew");
-            Console.WriteLine("-----------------------------------------------------------------");
-            displayRolodex();
+            string response = "y";
+            while (response == "y")
+            {
+                Console.WriteLine();
+                Console.WriteLine("Here's all them dang scumbags you have to pick from for your crew");
+                Console.WriteLine("-----------------------------------------------------------------");
+                displayRolodex();
 
+                Console.WriteLine($"Enter a scumbag's number to add them to your crew.");
+                int robberIndex = int.Parse(Console.ReadLine()) - 1;
+                crew.Add(rolodex[robberIndex]);
+                crewCutTotal = crew.Sum(c => c.PercentageCut);
 
-            Console.WriteLine();
-            Console.WriteLine($"Enter a scumbag's number to add them to your crew. (1-{rolodex.Count})");
-            int robberIndex = int.Parse(Console.ReadLine()) - 1;
-            crew.Add(rolodex[robberIndex]);
+                Console.WriteLine("Would you like to add another scumbag to your crew? (Y/N)");
+                response = Console.ReadLine().ToLower();
+            }
 
+            executeHeist();
 
             //====================================== methods ======================================
             void createARobber()
@@ -117,20 +125,45 @@ namespace HeistPartTwo
 
             void displayRolodex()
             {
-                string response = "y";
-                while (response == "y")
+                for (int i = 0; i < rolodex.Count; i++)
                 {
-                    for (int i = 0; i < rolodex.Count; i++)
+                    if (!crew.Contains(rolodex[i]) && crewCutTotal + rolodex[i].PercentageCut <= 100)
                     {
-                        if (!crew.Contains(rolodex[i]))
-                        {
-                            Console.WriteLine($"{i + 1}) Name: {rolodex[i].Name} | Specialty: {rolodex[i].Specialty} | Skill Level: {rolodex[i].SkillLevel} | Cut: {rolodex[i].PercentageCut}");
-                        }
-                        else
-                        {
-                            continue;
-                        }
+                        Console.WriteLine($"{i + 1}) Name: {rolodex[i].Name} | Specialty: {rolodex[i].Specialty} | Skill Level: {rolodex[i].SkillLevel} | Cut: {rolodex[i].PercentageCut}");
                     }
+                    else
+                    {
+                        continue;
+                    }
+                }
+            }
+
+            void executeHeist()
+            {
+                // Console.WriteLine($"Cash: {randoBank.CashOnHand} | Alarms: {randoBank.AlarmScore} | Vault: {randoBank.VaultScore} | Guards: {randoBank.SecurityGuardScore}");
+                foreach (IRobber r in crew)
+                {
+                    r.PerformSkill(randoBank);
+                }
+
+                if (randoBank.AlarmScore <= 0 && randoBank.SecurityGuardScore <= 0 && randoBank.VaultScore <= 0)
+                {
+                    Console.WriteLine("------------------------------------------------");
+                    Console.WriteLine("Success!!! You and your crew robbed the bank!!!!");
+
+                    decimal take = randoBank.CashOnHand;
+                    foreach (IRobber r in crew)
+                    {
+                        decimal crewMemberTake = (r.PercentageCut / 100m) * randoBank.CashOnHand;
+                        Console.WriteLine($"{r.Name} took home {crewMemberTake} dabloons from the successful heist");
+                        take = take - crewMemberTake;
+                    }
+                    Console.WriteLine($"You took home {take} dabloons from the successful heist");
+                }
+                else
+                {
+                    Console.WriteLine("------------------------------------------------");
+                    Console.WriteLine("Failure. Right to jail.");
                 }
             }
         }
